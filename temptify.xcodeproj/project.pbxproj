@@ -14,6 +14,7 @@
 		93B330DC29941F06002AA513 /* temptifyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B330DB29941F06002AA513 /* temptifyTests.swift */; };
 		93B330E629941F06002AA513 /* temptifyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B330E529941F06002AA513 /* temptifyUITests.swift */; };
 		93B330E829941F06002AA513 /* temptifyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B330E729941F06002AA513 /* temptifyUITestsLaunchTests.swift */; };
+		93B330F629943193002AA513 /* TemptationNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B330F529943015002AA513 /* TemptationNotification.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		93B330E529941F06002AA513 /* temptifyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = temptifyUITests.swift; sourceTree = "<group>"; };
 		93B330E729941F06002AA513 /* temptifyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = temptifyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		93B330F4299424F1002AA513 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		93B330F529943015002AA513 /* TemptationNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemptationNotification.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 		93B330C929941F04002AA513 /* temptify */ = {
 			isa = PBXGroup;
 			children = (
+				93B330F529943015002AA513 /* TemptationNotification.swift */,
 				93B330CA29941F04002AA513 /* temptifyApp.swift */,
 				93B330CC29941F04002AA513 /* ContentView.swift */,
 				93B330CE29941F06002AA513 /* Assets.xcassets */,
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93B330F629943193002AA513 /* TemptationNotification.swift in Sources */,
 				93B330CD29941F04002AA513 /* ContentView.swift in Sources */,
 				93B330CB29941F04002AA513 /* temptifyApp.swift in Sources */,
 			);

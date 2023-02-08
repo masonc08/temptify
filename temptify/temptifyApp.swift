@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct temptifyApp: App {
+//    static func main() {
+//        let x = TemptationNotification()
+//        x.scheduleLunchNotification()
+//    }
     var body: some Scene {
         WindowGroup {
             ContentView()
