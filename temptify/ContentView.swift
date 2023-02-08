@@ -22,11 +22,11 @@ struct ContentView: View {
             Text("Temptify")
         }
         .padding()
-        Button("Request Authorization", action: g)
-        Button("Turn on Notification", action: f)
+        Button("Request Authorization", action: handleAuth)
+        Button("Turn on Notification", action: handleNotif)
 //        button
     }
-    func g() {
+    func handleAuth() {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             
@@ -37,7 +37,7 @@ struct ContentView: View {
             // Enable or disable features based on the authorization.
         }
     }
-    func f() {
+    func handleNotif() {
         let center = UNUserNotificationCenter.current()
         let content =
         UNMutableNotificationContent()
