@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		938B38232994475C002C33D3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938B38222994475C002C33D3 /* AppDelegate.swift */; };
 		93B330CB29941F04002AA513 /* temptifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B330CA29941F04002AA513 /* temptifyApp.swift */; };
 		93B330CD29941F04002AA513 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B330CC29941F04002AA513 /* ContentView.swift */; };
 		93B330CF29941F06002AA513 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93B330CE29941F06002AA513 /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		938B38222994475C002C33D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93B330C729941F04002AA513 /* temptify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = temptify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B330CA29941F04002AA513 /* temptifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = temptifyApp.swift; sourceTree = "<group>"; };
 		93B330CC29941F04002AA513 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				93B330CC29941F04002AA513 /* ContentView.swift */,
 				93B330CE29941F06002AA513 /* Assets.xcassets */,
 				93B330D029941F06002AA513 /* Preview Content */,
+				938B38222994475C002C33D3 /* AppDelegate.swift */,
 			);
 			path = temptify;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				938B38232994475C002C33D3 /* AppDelegate.swift in Sources */,
 				93B330F629943193002AA513 /* TemptationNotification.swift in Sources */,
 				93B330CD29941F04002AA513 /* ContentView.swift in Sources */,
 				93B330CB29941F04002AA513 /* temptifyApp.swift in Sources */,

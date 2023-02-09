@@ -2,7 +2,7 @@ import SwiftUI
 import UserNotifications
 
 struct ContentView: View {
-    @State private var notificationsSent = 0
+    @State private var notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
     private let center = UNUserNotificationCenter.current()
     
     var body: some View {
@@ -45,14 +45,10 @@ struct ContentView: View {
             if error != nil {
                 print("Error sending notification: \(error!.localizedDescription)")
             } else {
-                self.notificationsSent += 1
+                UserDefaults.standard.set(notificationsSent+1, forKey: "notificationsSent")
+                notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
                 print("Notification sent successfully")
             }
         }
-    }
-    
-    private func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        notificationsSent += 1
-        completionHandler()
     }
 }
