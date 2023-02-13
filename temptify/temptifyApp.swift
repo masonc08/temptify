@@ -19,6 +19,7 @@ struct temptifyApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     private let center = UNUserNotificationCenter.current()
+    private let modalHandler = ModalHandler.shared
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
             if granted {
@@ -31,6 +32,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         return true
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        modalHandler.showModal = true
+        //let contentView = ContentView(modalHandler: modalHandler)
         print("A notification has been clicked")
     }
 }
