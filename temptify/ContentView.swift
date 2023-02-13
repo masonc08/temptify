@@ -30,13 +30,6 @@ struct ContentView: View {
         // Randomize the trigger time for the notification
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 5...30), repeats: false)
         let request = UNNotificationRequest(identifier: "test", content: content, trigger: trigger)
-               
-        
-        content.title = "Test Notification"
-        content.body = "This is a test notification"
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: "test", content: content, trigger: trigger)
         
         center.add(request) { (error) in
             if error != nil {
