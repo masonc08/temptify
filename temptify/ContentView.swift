@@ -8,27 +8,10 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Text("Notifications Sent: \(notificationsSent)")
-            
-            Button(action: {
-                self.requestPermission()
-            }) {
-                Text("Request Permission")
-            }
-            
             Button(action: {
                 self.sendNotification()
             }) {
                 Text("Send Notification")
-            }
-        }
-    }
-    
-    private func requestPermission() {
-        center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
-            if granted {
-                print("Notification permission granted")
-            } else {
-                print("Notification permission denied")
             }
         }
     }
