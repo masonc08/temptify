@@ -28,10 +28,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         center.delegate = self
-        if launchOptions?[UIApplication.LaunchOptionsKey.localNotification] is UILocalNotification {
-            // do anything you want update UIViewController, etc
-            print("notification pressed")
-        }
         return true
+    }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("A notification has been clicked")
     }
 }
