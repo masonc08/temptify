@@ -18,6 +18,20 @@ struct ContentView: View {
     
     private func sendNotification() {
         let content = UNMutableNotificationContent()
+                       
+        // Randomize content of notification
+        let rand = Int.random(in: 0...2)
+        let randTitle = ["rand=0", "rand=1", "rand=2"]
+        let randBody = ["ig is calling u", "checkout reelzz", "someone unfollowed u..."]
+               
+        content.title = randTitle[rand]
+        content.body = randBody[rand]
+               
+        // Randomize the trigger time for the notification
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 5...30), repeats: false)
+        let request = UNNotificationRequest(identifier: "test", content: content, trigger: trigger)
+               
+        
         content.title = "Test Notification"
         content.body = "This is a test notification"
         
