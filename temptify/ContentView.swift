@@ -19,10 +19,13 @@ struct ContentView: View {
     @State private var notifSuccumbedTotal = UserDefaults.standard.integer(forKey: "notifSuccumbedTotal")
     @State private var notifResistedTotal = UserDefaults.standard.integer(forKey: "notifResistedTotal")
     
+    //daily counters
     @State private var notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
     @State private var notifSuccumbedDaily = UserDefaults.standard.integer(forKey: "notifSuccumbedDaily")
     @State private var notifResistedDaily = UserDefaults.standard.integer(forKey: "notifResistedDaily")
     @State private var lastOpened = UserDefaults.standard.string(forKey: "lastOpened")
+    
+    @State private var skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
 
     @ObservedObject var temptingApp: TemptingApp = TemptingApp(appName: "Instagram")
     let appList = ["Tiktok", "Instagram", "Facebook", "Twitter", "WhatsApp", "Snapchat","WeChat","Gmail","Outlook","Reddit"]
@@ -107,6 +110,10 @@ struct ContentView: View {
                     Spacer()
                 }
             }
+            // onboarding modal only shows upon first launch
+            .sheet(isPresented:Binding<Bool>(get: {!skipOnboarding},
+                                            set: { skipOnboarding = !$0}),
+                content:{OnboardingView(skipOnboarding: self.$skipOnboarding)})
         }
     }
     
@@ -141,6 +148,7 @@ struct ContentView: View {
                 notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
             }
         }
+        //print(skipOnboarding)
     }
 }
 
@@ -209,4 +217,25 @@ struct ModalView: View {
 
 struct Screen: Hashable {
     let screenName: String
+}
+
+// modal view for onboarding screen that only shows the first time an user opens the app
+struct OnboardingView: View {
+    @Binding var skipOnboarding: Bool
+    var body: some View {
+        VStack {
+            Text("hello world")
+            Button(action: {
+                updateFlag()
+            }) {
+                Text("Go")
+            }            
+        }
+    }
+    
+    private func updateFlag(){
+        UserDefaults.standard.set(true, forKey: "skipOnboarding")
+        skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
+        print(skipOnboarding)
+    }
 }
