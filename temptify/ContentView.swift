@@ -40,8 +40,21 @@ struct ContentView: View {
                     Text("Personalize your Temptify Experience")
                 } else if (screen.screenName == "Help") {
                     Text("How Does Temptify Work?")
+                        .fontWeight(.bold)
+                    Text(Constants.helpPageText)
+                        .padding()
+                    Spacer()
                 } else if (screen.screenName == "Feedback") {
                     Text("Help Us Improve")
+                        .fontWeight(.bold)
+                    VStack{
+                        Text(Constants.feedbackPageText)
+                            .padding(.bottom)
+                        Link(Constants.feedbackPageLink, destination: URL(string: "https://www." + Constants.feedbackPageLink)!)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding()
+                    Spacer()
                 }
             }
         }
