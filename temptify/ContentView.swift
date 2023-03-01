@@ -74,20 +74,30 @@ struct ContentView: View {
     }
 }
 
+// Modal view when the user clicks on a notification from app
 struct ModalView: View {
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
         VStack {
-            Text("Are you sure you want to open Instagram?")
+            Text("TAKE A SECOND...").font(.largeTitle)
+            Text("This is attempt # \(7) to open \("Instagram") today.")
+            Text("DID YOU KNOW?").font(.title).padding()
+            Text("Teens who spend 5h/day on their phone are 50% more likely to experience depression.")
+            
+            Text("What can I do instead?")    .multilineTextAlignment(.center)
+                .frame(width: 200, height: 100)
+            
             Button(action: {
                 self.deepLink(app: "Instagram")
             }) {
-                Text("Take me there")
-            }
+                Text("I don't want to open Instagram")
+            }.padding()
+                .buttonStyle(.bordered)
+                .clipShape(Capsule())
             Button(action: {
                 self.dismissModal()
             }) {
-                Text("Not now")
+                Text("Continue to Instagram")
             }
         }
     }
