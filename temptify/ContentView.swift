@@ -14,32 +14,39 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Notifications Sent: \(notificationsSent)")
-                Button(action: {
-                    self.sendNotification()
-                }) {
-                    Text("Send Notification")
+                VStack {
+                    Spacer()
+                    Text("Notifications Sent: \(notificationsSent)")
+                    Button(action: {
+                        self.sendNotification()
+                    }) {
+                        Text("Send Notification")
+                    }
+                    .sheet(isPresented: $modalHandler.showModal, content: {ModalView()})
+                    Spacer()
                 }
-                .sheet(isPresented: $modalHandler.showModal, content: {ModalView()})
-            }
-            NavigationLink(value: Screen(screenName: "Help")) {
-                Text("Help")
-            }
-            NavigationLink(value: Screen(screenName: "Settings")) {
-                Text("Settings")
-            }
-            NavigationLink(value: Screen(screenName: "Feedback")) {
-                Text("Feedback")
-            }
-            .navigationDestination(for: Screen.self) { screen in
-                if (screen.screenName == "Settings") {
-                    Text("Personalize your Temptify Experience")
-                } else if (screen.screenName == "Help") {
-                    Text("How Does Temptify Work?")
-                } else if (screen.screenName == "Feedback") {
-                    Text("Help Us Improve")
+                HStack {
+                    NavigationLink(value: Screen(screenName: "Help")) {
+                        Text("Help")
+                    }
+                    NavigationLink(value: Screen(screenName: "Settings")) {
+                        Text("Settings")
+                    }
+                    NavigationLink(value: Screen(screenName: "Feedback")) {
+                        Text("Feedback")
+                    }
+                }
+                .navigationDestination(for: Screen.self) { screen in
+                    if (screen.screenName == "Settings") {
+                        Text("Personalize your Temptify Experience")
+                    } else if (screen.screenName == "Help") {
+                        Text("How Does Temptify Work?")
+                    } else if (screen.screenName == "Feedback") {
+                        Text("Help Us Improve")
+                    }
                 }
             }
+            .frame(maxHeight: .infinity)
         }
     }
     
