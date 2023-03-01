@@ -46,16 +46,16 @@ struct ContentView: View {
             }
             VStack (spacing: 10) {
                 Text("Attempts: \(dailyCounterHandler.notifSentDaily) times")
-                Text("Succumbed: \(dailyCounterHandler.notifSuccumbedDaily) times  (\(dailyCounterHandler.notifSentDaily == 0 ? "0" : String(format:"%.1f",(Double(dailyCounterHandler.notifSuccumbedDaily)/Double(dailyCounterHandler.notifSentDaily)*100)))%)")
-                Text("Resisted: \(dailyCounterHandler.notifResistedDaily) times  (\(dailyCounterHandler.notifSentDaily == 0 ? "0" : String(format:"%.1f",(Double(dailyCounterHandler.notifResistedDaily)/Double(dailyCounterHandler.notifSentDaily)*100)))%)")
+                Text("Succumbed: \(dailyCounterHandler.notifSuccumbedDaily) times  (\(dailyCounterHandler.notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(dailyCounterHandler.notifSuccumbedDaily)/Double(dailyCounterHandler.notifSentDaily)*100)))%)")
+                Text("Resisted: \(dailyCounterHandler.notifResistedDaily) times  (\(dailyCounterHandler.notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(dailyCounterHandler.notifResistedDaily)/Double(dailyCounterHandler.notifSentDaily)*100)))%)")
             }.padding(20)
             VStack (spacing: 10){
                 Text("ALL TIME").font(.title)
 //                Text("Total Notifications Sent: \(notifSentTotal) ")
 //                Text("Total Notifications Succumbed: \(notifSuccumbedTotal)")
 //                Text("Total Notifications Resisted: \(notifResistedTotal)")
-                Text("Succumbed: \(notifSentTotal == 0 ? "0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
-                Text("Resisted: \(notifSentTotal == 0 ? "0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
+                Text("Succumbed: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
+                Text("Resisted: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
                 
                 Button(action: {
                     self.sendNotification()
