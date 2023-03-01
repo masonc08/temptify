@@ -5,8 +5,18 @@ class ModalHandler: ObservableObject{
     static let shared = ModalHandler()
     @Published var showModal: Bool = false
 }
+class TemptingApp: ObservableObject {
+    @Published var appName: String
+    
+    init(appName: String) {
+        self.appName = appName
+    }
+}
 
 struct ContentView: View {
+    @ObservedObject var temptingApp: TemptingApp = TemptingApp(appName: "Instagram")
+    let appList = ["Tiktok", "Instagram", "Facebook", "Twitter", "WhatsApp", "Snapchat","WeChat","Gmail","Outlook","Reddit"]
+    @State var selectedApp: String = ""
     @State private var notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
     @ObservedObject var modalHandler = ModalHandler.shared
     private let center = UNUserNotificationCenter.current()
@@ -37,7 +47,20 @@ struct ContentView: View {
             }
             .navigationDestination(for: Screen.self) { screen in
                 if (screen.screenName == "Settings") {
-                    Text("Personalize your Temptify Experience")
+                    VStack {
+                        Text("Personalize your Temptify Experience").font(.largeTitle)
+                        Text("What app are you trying to use less?")
+                        Picker("Select an app", selection: $selectedApp) {
+                            ForEach(appList, id: \.self) {
+                                app in Text(app)
+                            }
+                        }.pickerStyle(.wheel)
+                        Text("You selected \(selectedApp)")
+                    }.onChange(of: selectedApp) {
+                        newValue in
+                        print("Selected app changed to \(newValue)")
+                    }
+                    
                 } else if (screen.screenName == "Help") {
                     Text("How Does Temptify Work?")
                         .fontWeight(.bold)
@@ -58,6 +81,11 @@ struct ContentView: View {
                 }
             }
         }
+    }
+    
+    private func updateApp(_ app: String) {
+        // Update the appName property of your TemptingApp object when the selection changes
+        temptingApp.appName = app
     }
     
     private func sendNotification() {
