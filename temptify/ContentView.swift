@@ -119,27 +119,10 @@ struct ContentView: View {
 struct ModalView: View {
     @Environment(\.presentationMode) var presentationMode
     private func randomFact() -> String?{
-            // Randomize fact to show in modal
-            let facts = [
-              "47% of Americans admit they’re addicted to their phones",
-              "The average American checks their smartphone 352 times per day",
-              "71% of people spend more time on their phone than with their romantic partner",
-              "72% of parents feel their teenagers are distracted by smartphones during in-person conversations",
-              "44% of American adults admit that not having their phones gives them anxiety",
-              "42% of American adults say they waste too much time on their smartphones",
-              "30% of Americans say they’d be more productive without their smartphones",
-              "People with smartphone addiction have worse sleep quality than those without",
-              "Smartphone addiction correlates with anxiety, depression, and other mental health issues",
-              "Cell phones cause over 20% of car accidents",
-              "Teenagers who spend 5 hours a day on electronic devices are 71% more likely to have suicide risk factors than those with one-hour use.",
-              "Smartphone use and depression are correlated.",
-              "Being constantly interrupted by alerts and notifications may be contributing towards a problematic deficit of attention.",
-              "33% of teens spend more time socializing with close friends online, rather than face-to-face."
-            ]
-            
-            let fact = facts.randomElement()
-            return fact
-        }
+        // Randomize fact to show in modal
+        let fact = Constants.facts.randomElement()
+        return fact
+    }
     var body: some View {
         VStack {
             Text("TAKE A SECOND...").font(.largeTitle)
