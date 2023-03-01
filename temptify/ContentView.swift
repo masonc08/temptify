@@ -13,14 +13,6 @@ class TemptingApp: ObservableObject {
     }
 }
 
-//class DailyCounterHandler: ObservableObject{
-//    static let shared = DailyCounterHandler()
-//    @Published var notifSentDaily: Int = 0
-//    @Published var notifSuccumbedDaily: Int = 0
-//    @Published var notifResistedDaily: Int = 0
-//    @Published var lastOpened: String = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
-//}
-
 struct ContentView: View {
     //all time counters
     @State private var notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
@@ -37,7 +29,6 @@ struct ContentView: View {
     @State var selectedApp: String = ""
     
     @ObservedObject var modalHandler = ModalHandler.shared
-    //private let dailyCounterHandler = DailyCounterHandler.shared
     private let center = UNUserNotificationCenter.current()
     
     var body: some View {
@@ -161,7 +152,6 @@ struct ModalView: View {
     @Binding var notifSentDaily: Int
     @Binding var notifSuccumbedDaily: Int
     @Binding var notifResistedDaily: Int
-    //private let dailyCounterHandler = DailyCounterHandler.shared
     private func randomFact() -> String?{
             // Randomize fact to show in modal
             let facts = [
