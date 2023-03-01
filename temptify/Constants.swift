@@ -30,4 +30,5 @@ struct Constants {
         "Being constantly interrupted by alerts and notifications may be contributing towards a problematic deficit of attention.",
         "33% of teens spend more time socializing with close friends online, rather than face-to-face."
     ]
+    static let appList = ["Tiktok", "Instagram", "Facebook", "Twitter", "WhatsApp", "Snapchat","WeChat","Gmail","Outlook","Reddit"]
 }
