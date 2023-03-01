@@ -26,15 +26,26 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack (spacing: 10){
                 Spacer()
-                Text("Total Notifications Sent: \(notifSentTotal) ")
-                Text("Total Notifications Succumbed: \(notifSuccumbedTotal)")
-                Text("Total Notifications Resisted: \(notifResistedTotal)")
+                Image("logo").resizable().scaledToFit().cornerRadius(5).padding(.bottom, 50)
+                Text("Resisting Instagram").font(.title).bold().italic().underline()
+                Text("TODAY'S COUNTER").font(.largeTitle)
+                Text(DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)).font(.title)
+            }
+            VStack (spacing: 10) {
+                Text("Attempts: \(dailyCounterHandler.notifSentDaily) times")
+                Text("Succumbed: \(dailyCounterHandler.notifSuccumbedDaily) times  (\(dailyCounterHandler.notifSentDaily == 0 ? "0" : String(format:"%.1f",(Double(dailyCounterHandler.notifSuccumbedDaily)/Double(dailyCounterHandler.notifSentDaily)*100)))%)")
+                Text("Resisted: \(dailyCounterHandler.notifResistedDaily) times  (\(dailyCounterHandler.notifSentDaily == 0 ? "0" : String(format:"%.1f",(Double(dailyCounterHandler.notifResistedDaily)/Double(dailyCounterHandler.notifSentDaily)*100)))%)")
+            }.padding(20)
+            VStack (spacing: 10){
+                Text("ALL TIME").font(.title)
+//                Text("Total Notifications Sent: \(notifSentTotal) ")
+//                Text("Total Notifications Succumbed: \(notifSuccumbedTotal)")
+//                Text("Total Notifications Resisted: \(notifResistedTotal)")
+                Text("Succumbed: \(notifSentTotal == 0 ? "0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
+                Text("Resisted: \(notifSentTotal == 0 ? "0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
                 
-                Text("Daily Notifications Sent: \(dailyCounterHandler.notifSentDaily)")
-                Text("Daily Notifications Succumbed: \(dailyCounterHandler.notifSuccumbedDaily)")
-                Text("Daily Notifications Resisted: \(dailyCounterHandler.notifResistedDaily)")
                 Button(action: {
                     self.sendNotification()
                 }) {
@@ -116,7 +127,7 @@ struct ModalView: View {
     var body: some View {
         VStack {
             Text("TAKE A SECOND...").font(.largeTitle)
-            Text("This is attempt # \(7) to open \("Instagram") today.")
+            Text("This is attempt # \(dailyCounterHandler.notifSentDaily) to open \("Instagram") today.")
             Text("DID YOU KNOW?").font(.title).padding()
             Text("Teens who spend 5h/day on their phone are 50% more likely to experience depression.")
             
@@ -132,7 +143,7 @@ struct ModalView: View {
                 // action
                 self.deepLink(app: "Instagram")
             }) {
-                Text("I don't want to open Instagram")
+                Text("Continue to Instagram")
             }.padding()
                 .buttonStyle(.bordered)
                 .clipShape(Capsule())
@@ -145,7 +156,7 @@ struct ModalView: View {
                 // action
                 self.dismissModal()
             }) {
-                Text("Continue to Instagram")
+                Text("I don't want to open Instagram")
             }
         }
     }
