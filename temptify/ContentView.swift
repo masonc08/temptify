@@ -8,18 +8,22 @@ class ModalHandler: ObservableObject{
 
 struct ContentView: View {
     @State private var notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
+    @State private var notificationsSuccumbed = UserDefaults.standard.integer(forKey: "notificationsSuccumbed")
+    @State private var notificationsResisted = UserDefaults.standard.integer(forKey: "notificationsResisted")
     @ObservedObject var modalHandler = ModalHandler.shared
     private let center = UNUserNotificationCenter.current()
     
     var body: some View {
         VStack {
             Text("Notifications Sent: \(notificationsSent)")
+            Text("Notifications Succumbed: \(notificationsSuccumbed)")
+            Text("Notifications Resisted: \(notificationsResisted)")
             Button(action: {
                 self.sendNotification()
             }) {
                 Text("Send Notification")
             }
-            .sheet(isPresented: $modalHandler.showModal, content: {ModalView()})
+            .sheet(isPresented: $modalHandler.showModal, content: {ModalView(notificationsSuccumbed: self.$notificationsSuccumbed, notificationsResisted: self.$notificationsResisted)})
         }
     }
     
@@ -52,15 +56,21 @@ struct ContentView: View {
 
 struct ModalView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Binding var notificationsSuccumbed: Int
+    @Binding var notificationsResisted: Int
     var body: some View {
         VStack {
             Text("Are you sure you want to open Instagram?")
             Button(action: {
+                UserDefaults.standard.set(notificationsSuccumbed+1, forKey: "notificationsSuccumbed")
+                notificationsSuccumbed = UserDefaults.standard.integer(forKey: "notificationsSuccumbed")
                 self.deepLink(app: "Instagram")
             }) {
                 Text("Take me there")
             }
             Button(action: {
+                UserDefaults.standard.set(notificationsResisted+1, forKey: "notificationsResisted")
+                notificationsResisted = UserDefaults.standard.integer(forKey: "notificationsResisted")
                 self.dismissModal()
             }) {
                 Text("Not now")
