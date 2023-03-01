@@ -59,8 +59,21 @@ struct ContentView: View {
                     Text("Personalize your Temptify Experience")
                 } else if (screen.screenName == "Help") {
                     Text("How Does Temptify Work?")
+                        .fontWeight(.bold)
+                    Text(Constants.helpPageText)
+                        .padding()
+                    Spacer()
                 } else if (screen.screenName == "Feedback") {
                     Text("Help Us Improve")
+                        .fontWeight(.bold)
+                    VStack{
+                        Text(Constants.feedbackPageText)
+                            .padding(.bottom)
+                        Link(Constants.feedbackPageLink, destination: URL(string: "https://www." + Constants.feedbackPageLink)!)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding()
+                    Spacer()
                 }
             }
         }
@@ -94,6 +107,7 @@ struct ContentView: View {
     }
 }
 
+// Modal view when the user clicks on a notification from app
 struct ModalView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var notifSuccumbedTotal: Int
@@ -101,7 +115,14 @@ struct ModalView: View {
     private let dailyCounterHandler = DailyCounterHandler.shared
     var body: some View {
         VStack {
-            Text("Are you sure you want to open Instagram?")
+            Text("TAKE A SECOND...").font(.largeTitle)
+            Text("This is attempt # \(7) to open \("Instagram") today.")
+            Text("DID YOU KNOW?").font(.title).padding()
+            Text("Teens who spend 5h/day on their phone are 50% more likely to experience depression.")
+            
+            Text("What can I do instead?")    .multilineTextAlignment(.center)
+                .frame(width: 200, height: 100)
+            
             Button(action: {
                 // increment total counter
                 UserDefaults.standard.set(notifSuccumbedTotal+1, forKey: "notifSuccumbedTotal")
@@ -111,8 +132,10 @@ struct ModalView: View {
                 // action
                 self.deepLink(app: "Instagram")
             }) {
-                Text("Take me there")
-            }
+                Text("I don't want to open Instagram")
+            }.padding()
+                .buttonStyle(.bordered)
+                .clipShape(Capsule())
             Button(action: {
                 // increment total counter
                 UserDefaults.standard.set(notifResistedTotal+1, forKey: "notifResistedTotal")
@@ -122,7 +145,7 @@ struct ModalView: View {
                 // action
                 self.dismissModal()
             }) {
-                Text("Not now")
+                Text("Continue to Instagram")
             }
         }
     }
