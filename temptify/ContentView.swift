@@ -14,24 +14,51 @@ class TemptingApp: ObservableObject {
 }
 
 struct ContentView: View {
+    //all time counters
+    @State private var notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
+    @State private var notifSuccumbedTotal = UserDefaults.standard.integer(forKey: "notifSuccumbedTotal")
+    @State private var notifResistedTotal = UserDefaults.standard.integer(forKey: "notifResistedTotal")
+    
+    @State private var notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
+    @State private var notifSuccumbedDaily = UserDefaults.standard.integer(forKey: "notifSuccumbedDaily")
+    @State private var notifResistedDaily = UserDefaults.standard.integer(forKey: "notifResistedDaily")
+    @State private var lastOpened = UserDefaults.standard.string(forKey: "lastOpened")
+
     @ObservedObject var temptingApp: TemptingApp = TemptingApp(appName: "Instagram")
     let appList = ["Tiktok", "Instagram", "Facebook", "Twitter", "WhatsApp", "Snapchat","WeChat","Gmail","Outlook","Reddit"]
     @State var selectedApp: String = ""
-    @State private var notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
+    
     @ObservedObject var modalHandler = ModalHandler.shared
     private let center = UNUserNotificationCenter.current()
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack (spacing: 10){
                 Spacer()
-                Text("Notifications Sent: \(notificationsSent)")
+                Image("logo").resizable().scaledToFit().cornerRadius(5).padding(.bottom, 50)
+                Text("Resisting Instagram").font(.title).bold().italic().underline()
+                Text("TODAY'S COUNTER").font(.largeTitle)
+                Text(DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)).font(.title)
+            }
+            VStack (spacing: 10) {
+                Text("Attempts: \(notifSentDaily) times")
+                Text("Succumbed: \(notifSuccumbedDaily) times  (\(notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(notifSuccumbedDaily)/Double(notifSentDaily)*100)))%)")
+                Text("Resisted: \(notifResistedDaily) times  (\(notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(notifResistedDaily)/Double(notifSentDaily)*100)))%)")
+            }.padding(20)
+            VStack (spacing: 10){
+                Text("ALL TIME").font(.title)
+//                Text("Total Notifications Sent: \(notifSentTotal) ")
+//                Text("Total Notifications Succumbed: \(notifSuccumbedTotal)")
+//                Text("Total Notifications Resisted: \(notifResistedTotal)")
+                Text("Succumbed: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
+                Text("Resisted: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
+                
                 Button(action: {
                     self.sendNotification()
                 }) {
                     Text("Send Notification")
                 }
-                .sheet(isPresented: $modalHandler.showModal, content: {ModalView()})
+                .sheet(isPresented: $modalHandler.showModal, content:{ModalView(notifSuccumbedTotal: self.$notifSuccumbedTotal, notifResistedTotal: self.$notifResistedTotal, notifSentDaily: self.$notifSentDaily, notifSuccumbedDaily: self.$notifSuccumbedDaily, notifResistedDaily: self.$notifResistedDaily)})
                 Spacer()
             }
             HStack {
@@ -107,9 +134,11 @@ struct ContentView: View {
             if error != nil {
                 print("Error sending notification: \(error!.localizedDescription)")
             } else {
-                UserDefaults.standard.set(notificationsSent+1, forKey: "notificationsSent")
-                notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
+                UserDefaults.standard.set(notifSentTotal+1, forKey: "notifSentTotal")
+                notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
                 print("Notification sent successfully")
+                UserDefaults.standard.set(notifSentDaily+1, forKey: "notifSentDaily")
+                notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
             }
         }
     }
@@ -118,6 +147,11 @@ struct ContentView: View {
 // Modal view when the user clicks on a notification from app
 struct ModalView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Binding var notifSuccumbedTotal: Int
+    @Binding var notifResistedTotal: Int
+    @Binding var notifSentDaily: Int
+    @Binding var notifSuccumbedDaily: Int
+    @Binding var notifResistedDaily: Int
     private func randomFact() -> String?{
         // Randomize fact to show in modal
         let fact = Constants.facts.randomElement()
@@ -126,7 +160,7 @@ struct ModalView: View {
     var body: some View {
         VStack {
             Text("TAKE A SECOND...").font(.largeTitle)
-            Text("This is attempt # \(7) to open \("Instagram") today.")
+            Text("This is attempt # \(notifSentDaily) to open \("Instagram") today.")
             Text("DID YOU KNOW?").font(.title).padding()
             Text(randomFact()!)
             
@@ -134,16 +168,30 @@ struct ModalView: View {
                 .frame(width: 200, height: 100)
             
             Button(action: {
-                self.dismissModal()
+                // increment total counter
+                UserDefaults.standard.set(notifSuccumbedTotal+1, forKey: "notifSuccumbedTotal")
+                notifSuccumbedTotal = UserDefaults.standard.integer(forKey: "notifSuccumbedTotal")
+                // increment daily counter
+                UserDefaults.standard.set(notifSuccumbedDaily+1, forKey: "notifSuccumbedDaily")
+                notifSuccumbedDaily = UserDefaults.standard.integer(forKey: "notifSuccumbedDaily")
+                // action
+                self.deepLink(app: "Instagram")
             }) {
-                Text("I don't want to open Instagram")
+                Text("Continue to Instagram")
             }.padding()
                 .buttonStyle(.bordered)
                 .clipShape(Capsule())
             Button(action: {
-                self.deepLink(app: "Instagram")
+                // increment total counter
+                UserDefaults.standard.set(notifResistedTotal+1, forKey: "notifResistedTotal")
+                notifResistedTotal = UserDefaults.standard.integer(forKey: "notifResistedTotal")
+                // increment daily counter
+                UserDefaults.standard.set(notifResistedDaily+1, forKey: "notifResistedDaily")
+                notifResistedDaily = UserDefaults.standard.integer(forKey: "notifResistedDaily")
+                // action
+                self.dismissModal()
             }) {
-                Text("Continue to Instagram")
+                Text("I don't want to open Instagram")
             }
         }
     }
