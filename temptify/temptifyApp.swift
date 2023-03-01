@@ -55,7 +55,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         content.body = randBody[rand]
 
         // Randomize the trigger time for the notification
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 5...30), repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 60...61), repeats: false)
         let request = UNNotificationRequest(identifier: "test", content: content, trigger: trigger)
 
         center.add(request) { (error) in
