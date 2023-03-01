@@ -6,26 +6,41 @@ class ModalHandler: ObservableObject{
     @Published var showModal: Bool = false
 }
 
+class DailyCounterHandler: ObservableObject{
+    static let shared = DailyCounterHandler()
+    @Published var notifSentDaily: Int = 0
+    @Published var notifSuccumbedDaily: Int = 0
+    @Published var notifResistedDaily: Int = 0
+    @Published var lastOpened: String = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
+}
+
 struct ContentView: View {
-    @State private var notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
-    @State private var notificationsSuccumbed = UserDefaults.standard.integer(forKey: "notificationsSuccumbed")
-    @State private var notificationsResisted = UserDefaults.standard.integer(forKey: "notificationsResisted")
+    //all time counters
+    @State private var notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
+    @State private var notifSuccumbedTotal = UserDefaults.standard.integer(forKey: "notifSuccumbedTotal")
+    @State private var notifResistedTotal = UserDefaults.standard.integer(forKey: "notifResistedTotal")
+    
     @ObservedObject var modalHandler = ModalHandler.shared
+    private let dailyCounterHandler = DailyCounterHandler.shared
     private let center = UNUserNotificationCenter.current()
     
     var body: some View {
         NavigationStack {
             VStack {
                 Spacer()
-                Text("Notifications Sent: \(notificationsSent)")
-                Text("Notifications Succumbed: \(notificationsSuccumbed)")
-                Text("Notifications Resisted: \(notificationsResisted)")
+                Text("Total Notifications Sent: \(notifSentTotal) ")
+                Text("Total Notifications Succumbed: \(notifSuccumbedTotal)")
+                Text("Total Notifications Resisted: \(notifResistedTotal)")
+                
+                Text("Daily Notifications Sent: \(dailyCounterHandler.notifSentDaily)")
+                Text("Daily Notifications Succumbed: \(dailyCounterHandler.notifSuccumbedDaily)")
+                Text("Daily Notifications Resisted: \(dailyCounterHandler.notifResistedDaily)")
                 Button(action: {
                     self.sendNotification()
                 }) {
                     Text("Send Notification")
                 }
-                .sheet(isPresented: $modalHandler.showModal, content: {ModalView(notificationsSuccumbed: self.$notificationsSuccumbed, notificationsResisted: self.$notificationsResisted)})
+                .sheet(isPresented: $modalHandler.showModal, content:{ModalView(notifSuccumbedTotal: self.$notifSuccumbedTotal, notifResistedTotal: self.$notifResistedTotal)})
                 Spacer()
             }
             HStack {
@@ -70,9 +85,10 @@ struct ContentView: View {
             if error != nil {
                 print("Error sending notification: \(error!.localizedDescription)")
             } else {
-                UserDefaults.standard.set(notificationsSent+1, forKey: "notificationsSent")
-                notificationsSent = UserDefaults.standard.integer(forKey: "notificationsSent")
+                UserDefaults.standard.set(notifSentTotal+1, forKey: "notifSentTotal")
+                notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
                 print("Notification sent successfully")
+                dailyCounterHandler.notifSentDaily = dailyCounterHandler.notifSentDaily + 1
             }
         }
     }
@@ -80,21 +96,30 @@ struct ContentView: View {
 
 struct ModalView: View {
     @Environment(\.presentationMode) var presentationMode
-    @Binding var notificationsSuccumbed: Int
-    @Binding var notificationsResisted: Int
+    @Binding var notifSuccumbedTotal: Int
+    @Binding var notifResistedTotal: Int
+    private let dailyCounterHandler = DailyCounterHandler.shared
     var body: some View {
         VStack {
             Text("Are you sure you want to open Instagram?")
             Button(action: {
-                UserDefaults.standard.set(notificationsSuccumbed+1, forKey: "notificationsSuccumbed")
-                notificationsSuccumbed = UserDefaults.standard.integer(forKey: "notificationsSuccumbed")
+                // increment total counter
+                UserDefaults.standard.set(notifSuccumbedTotal+1, forKey: "notifSuccumbedTotal")
+                notifSuccumbedTotal = UserDefaults.standard.integer(forKey: "notifSuccumbedTotal")
+                // increment daily counter
+                dailyCounterHandler.notifSuccumbedDaily = dailyCounterHandler.notifSuccumbedDaily + 1
+                // action
                 self.deepLink(app: "Instagram")
             }) {
                 Text("Take me there")
             }
             Button(action: {
-                UserDefaults.standard.set(notificationsResisted+1, forKey: "notificationsResisted")
-                notificationsResisted = UserDefaults.standard.integer(forKey: "notificationsResisted")
+                // increment total counter
+                UserDefaults.standard.set(notifResistedTotal+1, forKey: "notifResistedTotal")
+                notifResistedTotal = UserDefaults.standard.integer(forKey: "notifResistedTotal")
+                // increment daily counter
+                dailyCounterHandler.notifResistedDaily = dailyCounterHandler.notifResistedDaily + 1
+                // action
                 self.dismissModal()
             }) {
                 Text("Not now")
