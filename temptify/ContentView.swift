@@ -129,14 +129,14 @@ struct ModalView: View {
                 .frame(width: 200, height: 100)
             
             Button(action: {
-                self.deepLink(app: "Instagram")
+                self.dismissModal()
             }) {
                 Text("I don't want to open Instagram")
             }.padding()
                 .buttonStyle(.bordered)
                 .clipShape(Capsule())
             Button(action: {
-                self.dismissModal()
+                self.deepLink(app: "Instagram")
             }) {
                 Text("Continue to Instagram")
             }
