@@ -147,7 +147,6 @@ struct ContentView: View {
                 notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
             }
         }
-        //print(skipOnboarding)
     }
 }
 
