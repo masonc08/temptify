@@ -6,9 +6,9 @@ class ModalHandler: ObservableObject{
     @Published var showModal: Bool = false
 }
 class TemptingApp: ObservableObject {
+    static let shared = TemptingApp()
     @Published var appName: String
-    
-    init(appName: String) {
+    init(appName: String="Instagram") {
         self.appName = appName
     }
 }
@@ -38,7 +38,7 @@ struct ContentView: View {
             VStack (spacing: 10){
                 Spacer()
                 Image("TransparentLogoText").resizable().scaledToFit().cornerRadius(10).padding(.bottom, 50)
-                Text("Resisting Instagram").font(.title).bold().italic().underline()
+                Text("Resisting \(selectedApp)").font(.title).bold().italic().underline()
                 Text("TODAY'S COUNTER").font(.largeTitle)
                 Text(DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)).font(.title)
             }
@@ -49,12 +49,15 @@ struct ContentView: View {
             }.padding(20)
             VStack (spacing: 10){
                 Text("ALL TIME").font(.title)
-//                Text("Total Notifications Sent: \(notifSentTotal) ")
-//                Text("Total Notifications Succumbed: \(notifSuccumbedTotal)")
-//                Text("Total Notifications Resisted: \(notifResistedTotal)")
                 Text("Succumbed: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
                 Text("Resisted: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
-                .sheet(isPresented: $modalHandler.showModal, content:{ModalView(notifSuccumbedTotal: self.$notifSuccumbedTotal, notifResistedTotal: self.$notifResistedTotal, notifSentDaily: self.$notifSentDaily, notifSuccumbedDaily: self.$notifSuccumbedDaily, notifResistedDaily: self.$notifResistedDaily)})
+                .sheet(isPresented: $modalHandler.showModal, content:{ModalView(
+                    notifSuccumbedTotal: self.$notifSuccumbedTotal,
+                    notifResistedTotal: self.$notifResistedTotal,
+                    notifSentDaily: self.$notifSentDaily,
+                    notifSuccumbedDaily: self.$notifSuccumbedDaily,
+                    notifResistedDaily: self.$notifResistedDaily,
+                    selectedApp: $selectedApp)})
                 Spacer()
             }
             HStack {
@@ -124,6 +127,8 @@ struct ModalView: View {
     @Binding var notifSentDaily: Int
     @Binding var notifSuccumbedDaily: Int
     @Binding var notifResistedDaily: Int
+    @Binding var selectedApp: String
+    @State private var isPresentingGoodJobModal = false
     private func randomFact() -> String?{
         // Randomize fact to show in modal
         let fact = Constants.facts.randomElement()
@@ -132,7 +137,7 @@ struct ModalView: View {
     var body: some View {
         VStack {
             Text("TAKE A SECOND...").font(.largeTitle)
-            Text("This is attempt # \(notifSentDaily) to open \("Instagram") today.")
+            Text("This is attempt # \(notifSentDaily) to open \(selectedApp) today.")
             Text("DID YOU KNOW?").font(.title).padding()
             Text(randomFact()!)
             
@@ -147,9 +152,9 @@ struct ModalView: View {
                 UserDefaults.standard.set(notifSuccumbedDaily+1, forKey: "notifSuccumbedDaily")
                 notifSuccumbedDaily = UserDefaults.standard.integer(forKey: "notifSuccumbedDaily")
                 // action
-                self.deepLink(app: "Instagram")
+                self.deepLink(app: selectedApp)
             }) {
-                Text("Continue to Instagram")
+                Text("Continue to \(selectedApp)")
             }.padding()
                 .buttonStyle(.bordered)
             Button(action: {
@@ -162,21 +167,37 @@ struct ModalView: View {
                 // action
                 self.dismissModal()
             }) {
-                Text("I don't want to open Instagram")
+                Text("I don't want to open \(selectedApp)")
             }
+        }.sheet(isPresented: $isPresentingGoodJobModal) {
+            GoodJobModalView()
         }
     }
     private func deepLink(app: String) {
         presentationMode.wrappedValue.dismiss()
         print("opening app...")
-        let url = URL(string: "maps://")!
+        let url = URL(string: "\(app.lowercased())://")!
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
 
     }
     private func dismissModal() {
-        presentationMode.wrappedValue.dismiss()
+        self.isPresentingGoodJobModal = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.isPresentingGoodJobModal = false
+            self.presentationMode.wrappedValue.dismiss()
+        }
     }
 }
+
+struct GoodJobModalView: View {
+    var body: some View {
+        VStack {
+            Text("👏 Good job! 👏").font(.largeTitle)
+            Text("You resisted temptation and stayed focused.")
+        }
+    }
+}
+
 
 struct Screen: Hashable {
     let screenName: String

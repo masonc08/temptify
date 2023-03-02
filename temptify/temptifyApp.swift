@@ -20,6 +20,7 @@ struct temptifyApp: App {
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     private let center = UNUserNotificationCenter.current()
     private let modalHandler = ModalHandler.shared
+    private let temptingApp = TemptingApp.shared
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
@@ -43,16 +44,18 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         return true
     }
 
+    // todo: only runs on first launch since installation rn
     private func schedule_notifications() {
         let content = UNMutableNotificationContent()
-
+        let notifOptions = Constants.notificationsContent[temptingApp.appName]
+        let count = notifOptions?.count ?? 0
         // Randomize content of notification
-        let rand = Int.random(in: 0...2)
-        let randTitle = ["rand=0", "rand=1", "rand=2"]
-        let randBody = ["ig is calling u", "checkout reelzz", "someone unfollowed u..."]
-
-        content.title = randTitle[rand]
-        content.body = randBody[rand]
+        let rand = Int.random(in: 0...(count-1))
+        let temptingNotification = notifOptions?[rand] ?? ["title": "Sample notification", "message": "Sample notification text"]
+        
+        print(temptingNotification)
+        content.title = temptingNotification["title"] ?? ""
+        content.body = temptingNotification["message"] ?? ""
 
         // Randomize the trigger time for the notification
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 60...61), repeats: false)
