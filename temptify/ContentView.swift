@@ -128,6 +128,7 @@ struct ModalView: View {
     @Binding var notifSuccumbedDaily: Int
     @Binding var notifResistedDaily: Int
     @Binding var selectedApp: String
+    @State private var isPresentingGoodJobModal = false
     private func randomFact() -> String?{
         // Randomize fact to show in modal
         let fact = Constants.facts.randomElement()
@@ -168,6 +169,8 @@ struct ModalView: View {
             }) {
                 Text("I don't want to open \(selectedApp)")
             }
+        }.sheet(isPresented: $isPresentingGoodJobModal) {
+            GoodJobModalView()
         }
     }
     private func deepLink(app: String) {
@@ -178,9 +181,23 @@ struct ModalView: View {
 
     }
     private func dismissModal() {
-        presentationMode.wrappedValue.dismiss()
+        self.isPresentingGoodJobModal = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.isPresentingGoodJobModal = false
+            self.presentationMode.wrappedValue.dismiss()
+        }
     }
 }
+
+struct GoodJobModalView: View {
+    var body: some View {
+        VStack {
+            Text("👏 Good job! 👏").font(.largeTitle)
+            Text("You resisted temptation and stayed focused.")
+        }
+    }
+}
+
 
 struct Screen: Hashable {
     let screenName: String
