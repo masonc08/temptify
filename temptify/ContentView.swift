@@ -28,7 +28,7 @@ struct ContentView: View {
     @State private var skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
 
     @ObservedObject var temptingApp: TemptingApp = TemptingApp(appName: "Instagram")
-    @State var selectedApp: String = ""
+    @State var selectedApp: String = "Instagram"
     
     @ObservedObject var modalHandler = ModalHandler.shared
     private let center = UNUserNotificationCenter.current()
@@ -278,5 +278,25 @@ struct OnboardingView: View {
     private func updateFlag(){
         UserDefaults.standard.set(true, forKey: "skipOnboarding")
         skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
+    }
+}
+
+struct LoadingView: View {
+    @State var isActive:Bool = false
+    var body: some View {
+        ZStack {
+            if self.isActive {
+                    ContentView()
+                } else {
+                    Image("WhiteLogoText").resizable().scaledToFit().cornerRadius(10)
+                }
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    withAnimation {
+                        self.isActive = true
+                }
+            }
+        }
     }
 }

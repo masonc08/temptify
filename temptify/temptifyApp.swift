@@ -12,7 +12,7 @@ struct temptifyApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoadingView()
         }
     }
 }
@@ -65,16 +65,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             if error != nil {
                 print("Error sending notification: \(error!.localizedDescription)")
             } else {
-                let notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
-                UserDefaults.standard.set(notifSentTotal+1, forKey: "notifSentTotal")
                 print("Notification sent successfully on app launch")
-                let notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
-                UserDefaults.standard.set(notifSentDaily+1, forKey: "notifSentDaily")
             }
         }
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
+        UserDefaults.standard.set(notifSentTotal+1, forKey: "notifSentTotal")
+        let notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
+        UserDefaults.standard.set(notifSentDaily+1, forKey: "notifSentDaily")
         modalHandler.showModal = true
         print("A notification has been clicked")
     }
