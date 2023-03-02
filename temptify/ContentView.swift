@@ -54,12 +54,6 @@ struct ContentView: View {
 //                Text("Total Notifications Resisted: \(notifResistedTotal)")
                 Text("Succumbed: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
                 Text("Resisted: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
-                
-                Button(action: {
-                    self.sendNotification()
-                }) {
-                    Text("Send Notification")
-                }
                 .sheet(isPresented: $modalHandler.showModal, content:{ModalView(notifSuccumbedTotal: self.$notifSuccumbedTotal, notifResistedTotal: self.$notifResistedTotal, notifSentDaily: self.$notifSentDaily, notifSuccumbedDaily: self.$notifSuccumbedDaily, notifResistedDaily: self.$notifResistedDaily)})
                 Spacer()
             }
@@ -119,34 +113,6 @@ struct ContentView: View {
     private func updateApp(_ app: String) {
         // Update the appName property of your TemptingApp object when the selection changes
         temptingApp.appName = app
-    }
-    
-    private func sendNotification() {
-        let content = UNMutableNotificationContent()
-                       
-        // Randomize content of notification
-        let rand = Int.random(in: 0...2)
-        let randTitle = ["rand=0", "rand=1", "rand=2"]
-        let randBody = ["ig is calling u", "checkout reelzz", "someone unfollowed u..."]
-               
-        content.title = randTitle[rand]
-        content.body = randBody[rand]
-               
-        // Randomize the trigger time for the notification
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 5...30), repeats: false)
-        let request = UNNotificationRequest(identifier: "test", content: content, trigger: trigger)
-        
-        center.add(request) { (error) in
-            if error != nil {
-                print("Error sending notification: \(error!.localizedDescription)")
-            } else {
-                UserDefaults.standard.set(notifSentTotal+1, forKey: "notifSentTotal")
-                notifSentTotal = UserDefaults.standard.integer(forKey: "notifSentTotal")
-                print("Notification sent successfully")
-                UserDefaults.standard.set(notifSentDaily+1, forKey: "notifSentDaily")
-                notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
-            }
-        }
     }
 }
 
