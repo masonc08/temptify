@@ -19,13 +19,15 @@ struct ContentView: View {
     @State private var notifSuccumbedTotal = UserDefaults.standard.integer(forKey: "notifSuccumbedTotal")
     @State private var notifResistedTotal = UserDefaults.standard.integer(forKey: "notifResistedTotal")
     
+    //daily counters
     @State private var notifSentDaily = UserDefaults.standard.integer(forKey: "notifSentDaily")
     @State private var notifSuccumbedDaily = UserDefaults.standard.integer(forKey: "notifSuccumbedDaily")
     @State private var notifResistedDaily = UserDefaults.standard.integer(forKey: "notifResistedDaily")
     @State private var lastOpened = UserDefaults.standard.string(forKey: "lastOpened")
+    
+    @State private var skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
 
     @ObservedObject var temptingApp: TemptingApp = TemptingApp(appName: "Instagram")
-    let appList = ["Tiktok", "Instagram", "Facebook", "Twitter", "WhatsApp", "Snapchat","WeChat","Gmail","Outlook","Reddit"]
     @State var selectedApp: String = ""
     
     @ObservedObject var modalHandler = ModalHandler.shared
@@ -35,7 +37,7 @@ struct ContentView: View {
         NavigationStack {
             VStack (spacing: 10){
                 Spacer()
-                Image("logo").resizable().scaledToFit().cornerRadius(5).padding(.bottom, 50)
+                Image("TransparentLogoText").resizable().scaledToFit().cornerRadius(10).padding(.bottom, 50)
                 Text("Resisting Instagram").font(.title).bold().italic().underline()
                 Text("TODAY'S COUNTER").font(.largeTitle)
                 Text(DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)).font(.title)
@@ -78,7 +80,7 @@ struct ContentView: View {
                         Text("Personalize your Temptify Experience").font(.largeTitle)
                         Text("What app are you trying to use less?")
                         Picker("Select an app", selection: $selectedApp) {
-                            ForEach(appList, id: \.self) {
+                            ForEach(Constants.appList, id: \.self) {
                                 app in Text(app)
                             }
                         }.pickerStyle(.wheel)
@@ -107,6 +109,10 @@ struct ContentView: View {
                     Spacer()
                 }
             }
+            // onboarding modal only shows upon first launch
+            .sheet(isPresented:Binding<Bool>(get: {!skipOnboarding},
+                                            set: { skipOnboarding = !$0}),
+                   content:{OnboardingView(skipOnboarding: self.$skipOnboarding, selectedApp: self.$selectedApp)})
         }
     }
     
@@ -180,7 +186,6 @@ struct ModalView: View {
                 Text("Continue to Instagram")
             }.padding()
                 .buttonStyle(.bordered)
-                .clipShape(Capsule())
             Button(action: {
                 // increment total counter
                 UserDefaults.standard.set(notifResistedTotal+1, forKey: "notifResistedTotal")
@@ -209,4 +214,82 @@ struct ModalView: View {
 
 struct Screen: Hashable {
     let screenName: String
+}
+
+// modal view for onboarding screen that only shows the first time an user opens the app
+struct OnboardingView: View {
+    @Binding var skipOnboarding: Bool
+    @Binding var selectedApp: String
+    var body: some View {
+        NavigationStack {
+            VStack (spacing: 10){
+                //Spacer()
+                Image("TransparentLogoText").resizable().scaledToFit().cornerRadius(10).padding(.top, 30)
+                Text("Are notifications getting a little too tempting for you?").font(.title3).padding(.top, 50).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true).padding(.horizontal, 10)
+                Text("Start improving your self control today!").font(.title3).padding(10)
+                //Spacer()
+            }
+            VStack (spacing: 20){
+                Spacer()
+                NavigationLink(value: Screen(screenName: "Help")) {
+                    Text("Help")
+                }
+                NavigationLink(value: Screen(screenName: "Settings")) {
+                    Text("Settings")
+                }
+                NavigationLink(value: Screen(screenName: "Feedback")) {
+                    Text("Feedback")
+                }
+                Spacer()
+            }
+            .navigationDestination(for: Screen.self) { screen in
+                if (screen.screenName == "Settings") {
+                    VStack {
+                        Text("Personalize your Temptify Experience").font(.largeTitle)
+                        Text("What app are you trying to use less?")
+                        Picker("Select an app", selection: $selectedApp) {
+                            ForEach(Constants.appList, id: \.self) {
+                                app in Text(app)
+                            }
+                        }.pickerStyle(.wheel)
+                        Text("You selected \(selectedApp)")
+                    }.onChange(of: selectedApp) {
+                        newValue in
+                        print("Selected app changed to \(newValue)")
+                    }
+                    
+                } else if (screen.screenName == "Help") {
+                    Text("How Does Temptify Work?")
+                        .fontWeight(.bold)
+                    Text(Constants.helpPageText)
+                        .padding()
+                    Spacer()
+                } else if (screen.screenName == "Feedback") {
+                    Text("Help Us Improve")
+                        .fontWeight(.bold)
+                    VStack{
+                        Text(Constants.feedbackPageText)
+                            .padding(.bottom)
+                        Link(Constants.feedbackPageLink, destination: URL(string: "https://www." + Constants.feedbackPageLink)!)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding()
+                    Spacer()
+                }
+            }
+            VStack (spacing: 10) {
+                Spacer()
+                Button(action: {
+                    updateFlag()
+                }) {
+                    Text("GO!").font(.title)
+                }.buttonStyle(.bordered)
+            }
+        }
+    }
+    
+    private func updateFlag(){
+        UserDefaults.standard.set(true, forKey: "skipOnboarding")
+        skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
+    }
 }
