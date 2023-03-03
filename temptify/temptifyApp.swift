@@ -26,6 +26,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
             if granted {
                 print("Notification permission granted")
+                self.schedule_notifications()
             } else {
                 print("Notification permission denied")
             }
