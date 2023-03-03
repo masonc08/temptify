@@ -62,7 +62,7 @@ struct ContentView: View {
             }
             HStack {
                 NavigationLink(value: Screen(screenName: "Help")) {
-                    Text("Help")
+                    Text("Instructions")
                 }
                 NavigationLink(value: Screen(screenName: "Settings")) {
                     Text("Settings")
@@ -82,6 +82,12 @@ struct ContentView: View {
                             }
                         }.pickerStyle(.wheel)
                         Text("You selected \(selectedApp)")
+                            .padding(.bottom)
+                        Text("Block notifications from \(selectedApp) in your phone settings")
+                        Button("Open Settings", action: {
+                            let url = URL(string: "App-prefs://")!
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        })
                     }.onChange(of: selectedApp) {
                         newValue in
                         print("Selected app changed to \(newValue)")
