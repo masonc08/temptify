@@ -48,7 +48,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     // todo: only runs on first launch since installation rn
     private func schedule_notifications() {
         let content = UNMutableNotificationContent()
-        let notifOptions = Constants.notificationsContent[temptingApp.appName]
+        let selectedApp = UserDefaults.standard.string(forKey: "selectedApp") ?? "Instagram"
+        let notifOptions = Constants.notificationsContent[selectedApp]
+        print(selectedApp)
         let count = notifOptions?.count ?? 0
         // Randomize content of notification
         let rand = Int.random(in: 0...(count-1))
