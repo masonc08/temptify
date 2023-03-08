@@ -28,7 +28,9 @@ struct ContentView: View {
     @State private var skipOnboarding = UserDefaults.standard.bool( forKey: "skipOnboarding")
 
     @ObservedObject var temptingApp: TemptingApp = TemptingApp(appName: "Instagram")
-    @State var selectedApp: String = "Instagram"
+    
+    @State private var selectedApp: String = UserDefaults.standard.string(forKey: "selectedApp") ?? "Instagram"
+
     
     @ObservedObject var modalHandler = ModalHandler.shared
     private let center = UNUserNotificationCenter.current()
@@ -90,6 +92,7 @@ struct ContentView: View {
                         })
                     }.onChange(of: selectedApp) {
                         newValue in
+                        self.updateApp(selectedApp)
                         print("Selected app changed to \(newValue)")
                     }
                     
@@ -120,8 +123,10 @@ struct ContentView: View {
     }
     
     private func updateApp(_ app: String) {
-        // Update the appName property of your TemptingApp object when the selection changes
+        // Update selectedapp
         temptingApp.appName = app
+        UserDefaults.standard.set(app, forKey: "selectedApp")
+
     }
 }
 
@@ -138,6 +143,7 @@ struct ModalView: View {
     private func randomFact() -> String?{
         // Randomize fact to show in modal
         let fact = Constants.facts.randomElement()
+        print(selectedApp)
         return fact
     }
     var body: some View {

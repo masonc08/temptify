@@ -49,11 +49,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     private func schedule_notifications() {
         let content = UNMutableNotificationContent()
         for i in 0...10 {
-            let notifOptions = Constants.notificationsContent[temptingApp.appName]
+            let selectedApp = UserDefaults.standard.string(forKey: "selectedApp") ?? "Instagram"
+            let notifOptions = Constants.notificationsContent[selectedApp]
+            print(selectedApp)
             let count = notifOptions?.count ?? 0
             // Randomize content of notification
             let rand = Int.random(in: 0...(count-1))
             let temptingNotification = notifOptions?[rand] ?? ["title": "Sample notification", "message": "Sample notification text"]
+            print(temptingNotification)
+            content.title = temptingNotification["title"] ?? ""
+            content.body = temptingNotification["message"] ?? ""
 
             print(temptingNotification)
             content.title = temptingNotification["title"] ?? ""
