@@ -32,7 +32,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         center.delegate = self
-       
+
         // refresh daily counter if needed
         let today = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
         if today != UserDefaults.standard.string(forKey: "lastOpened"){
@@ -48,25 +48,27 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     // todo: only runs on first launch since installation rn
     private func schedule_notifications() {
         let content = UNMutableNotificationContent()
-        let notifOptions = Constants.notificationsContent[temptingApp.appName]
-        let count = notifOptions?.count ?? 0
-        // Randomize content of notification
-        let rand = Int.random(in: 0...(count-1))
-        let temptingNotification = notifOptions?[rand] ?? ["title": "Sample notification", "message": "Sample notification text"]
-        
-        print(temptingNotification)
-        content.title = temptingNotification["title"] ?? ""
-        content.body = temptingNotification["message"] ?? ""
+        for i in 0...10 {
+            let notifOptions = Constants.notificationsContent[temptingApp.appName]
+            let count = notifOptions?.count ?? 0
+            // Randomize content of notification
+            let rand = Int.random(in: 0...(count-1))
+            let temptingNotification = notifOptions?[rand] ?? ["title": "Sample notification", "message": "Sample notification text"]
 
-        // Randomize the trigger time for the notification
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Double.random(in: 60...61), repeats: false)
-        let request = UNNotificationRequest(identifier: "test", content: content, trigger: trigger)
+            print(temptingNotification)
+            content.title = temptingNotification["title"] ?? ""
+            content.body = temptingNotification["message"] ?? ""
 
-        center.add(request) { (error) in
-            if error != nil {
-                print("Error sending notification: \(error!.localizedDescription)")
-            } else {
-                print("Notification sent successfully on app launch")
+            // Randomize the trigger time for the notification
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(15+i*60), repeats: false)
+            let request = UNNotificationRequest(identifier: "test"+String(i), content: content, trigger: trigger)
+
+            center.add(request) { (error) in
+                if error != nil {
+                    print("Error sending notification: \(error!.localizedDescription)")
+                } else {
+                    print("Notification sent successfully on app launch")
+                }
             }
         }
     }
