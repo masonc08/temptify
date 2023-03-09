@@ -31,37 +31,69 @@ struct ContentView: View {
     
     @State private var selectedApp: String = UserDefaults.standard.string(forKey: "selectedApp") ?? "Instagram"
 
-    
     @ObservedObject var modalHandler = ModalHandler.shared
     private let center = UNUserNotificationCenter.current()
     
     var body: some View {
         NavigationStack {
-            VStack (spacing: 10){
-                Spacer()
-                Image("TransparentLogoText").resizable().scaledToFit().cornerRadius(10).padding(.bottom, 50)
-                Text("Resisting \(selectedApp)").font(.title).bold().italic().underline()
-                Text("TODAY'S COUNTER").font(.largeTitle)
-                Text(DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)).font(.title)
+            VStack (spacing: 5){
+                Image("TransparentLogoText").resizable().scaledToFit().cornerRadius(10).padding(.bottom).frame(height: UIScreen.main.bounds.size.width * 0.4)
+                VStack (alignment: .center) {
+                    RoundedRectangle(cornerRadius:15)
+                        .foregroundColor(self.getColor(hex: "80A90"))
+                        .frame(width: UIScreen.main.bounds.size.width * 0.9, height: 100)
+                        .overlay(
+                            Text("Resisting \(selectedApp)")
+                                .font(.title)
+                                .bold()
+                                .italic()
+                                .foregroundColor(.white)
+                        )
+                        .padding(5)
+                }
+                .frame(width: 300, alignment: .center)
+                
+                RoundedRectangle(cornerRadius: 15.0)
+                    .foregroundColor(self.getColor(hex: "58637F"))
+                    .frame(width: UIScreen.main.bounds.size.width * 0.9, height: 220)
+                    .overlay(
+                        VStack (spacing: 5){
+                            Text("TODAY'S COUNTER").font(.largeTitle).foregroundColor(.white)
+                            Text(DateFormatter.localizedString(from: Date(), dateStyle: .long, timeStyle: .none)).font(.title).foregroundColor(.white)
+                            
+                            Text("Attempts: \(notifSentDaily) times").foregroundColor(.white)
+                            Text("Succumbed: \(notifSuccumbedDaily) times  (\(notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(notifSuccumbedDaily)/Double(notifSentDaily)*100)))%)").foregroundColor(.white)
+                            Text("Resisted: \(notifResistedDaily) times  (\(notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(notifResistedDaily)/Double(notifSentDaily)*100)))%)").foregroundColor(.white)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    )
+                    .padding(5)
+                
+                    RoundedRectangle(cornerRadius: 15.0)
+                        .foregroundColor(self.getColor(hex: "454167"))
+                        .frame(width: UIScreen.main.bounds.size.width * 0.9, height: 100)
+                        .overlay(
+                            VStack {
+                                Text("ALL TIME").font(.title).foregroundColor(.white)
+                                Text("Succumbed: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%").foregroundColor(.white)
+                                Text("Resisted: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%").foregroundColor(.white)
+                                .sheet(isPresented: $modalHandler.showModal, content:{
+                                    ModalView(
+                                        notifSuccumbedTotal: self.$notifSuccumbedTotal,
+                                        notifResistedTotal: self.$notifResistedTotal,
+                                        notifSentDaily: self.$notifSentDaily,
+                                        notifSuccumbedDaily: self.$notifSuccumbedDaily,
+                                        notifResistedDaily: self.$notifResistedDaily,
+                                        selectedApp: $selectedApp
+                                    )
+                                })
+                            }
+                        )
+                        .padding(5)
+                
+    
             }
-            VStack (spacing: 10) {
-                Text("Attempts: \(notifSentDaily) times")
-                Text("Succumbed: \(notifSuccumbedDaily) times  (\(notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(notifSuccumbedDaily)/Double(notifSentDaily)*100)))%)")
-                Text("Resisted: \(notifResistedDaily) times  (\(notifSentDaily == 0 ? "0.0" : String(format:"%.1f",(Double(notifResistedDaily)/Double(notifSentDaily)*100)))%)")
-            }.padding(20)
-            VStack (spacing: 10){
-                Text("ALL TIME").font(.title)
-                Text("Succumbed: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifSuccumbedTotal)/Double(notifSentTotal)*100)))%")
-                Text("Resisted: \(notifSentTotal == 0 ? "0.0" : String(format:"%.1f", (Double(notifResistedTotal)/Double(notifSentTotal)*100)))%")
-                .sheet(isPresented: $modalHandler.showModal, content:{ModalView(
-                    notifSuccumbedTotal: self.$notifSuccumbedTotal,
-                    notifResistedTotal: self.$notifResistedTotal,
-                    notifSentDaily: self.$notifSentDaily,
-                    notifSuccumbedDaily: self.$notifSuccumbedDaily,
-                    notifResistedDaily: self.$notifResistedDaily,
-                    selectedApp: $selectedApp)})
-                Spacer()
-            }
+                
             HStack {
                 NavigationLink(value: Screen(screenName: "Help")) {
                     Text("Instructions")
@@ -120,6 +152,22 @@ struct ContentView: View {
                                             set: { skipOnboarding = !$0}),
                    content:{OnboardingView(skipOnboarding: self.$skipOnboarding, selectedApp: self.$selectedApp)})
         }
+    }
+    
+    private func getColor(hex: String) -> Color {
+        // Get the hex string components
+        let rString = hex.prefix(2)
+        let gString = hex.prefix(4).suffix(2)
+        let bString = hex.suffix(2)
+
+        // Convert the hex string components to integers
+        let r = Int(rString, radix: 16)!
+        let g = Int(gString, radix: 16)!
+        let b = Int(bString, radix: 16)!
+
+        // Convert the RGB values to a SwiftUI Color
+        let color = Color(red: Double(r) / 255.0, green: Double(g) / 255.0, blue: Double(b) / 255.0)
+        return color
     }
     
     private func updateApp(_ app: String) {
